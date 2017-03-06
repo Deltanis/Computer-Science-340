@@ -5,6 +5,7 @@ Austin McPhail
 
 */
 
+#define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
 #include <iostream>
 #include <climits> //Used for HIGH_VALUE
 
@@ -16,13 +17,15 @@ struct Edge {
 	int vertext2;
 	int distance;
 };
-Edge q[];
-Edge t[];
+Edge q[14];
+Edge t[14];
+int t_array_pos = 0;
 
 //Kruskal Data Structures
 struct VertexNode {
 	int vertex;
 	VertexNode* next;
+	SubsetNode* subset;
 };
 struct SubsetNode {
 	int size;
@@ -43,10 +46,12 @@ void Search(Edge q[], int edgeCount, SetNode* &s, int vertexCount, Edge t[]);
 void Tree(Edge t[]);
 void Insert(int x, int y, int z, Edge q[], int &edgeCount);
 bool Insert(int w, SetNode* &s, int &vertexCount);
-void MakeSet(SetNode* &s);
+void MakeSet(VertexNode* v);
 Edge DeleteMin(Edge q[], int &edgeCount);
 int Max(int height1, int height2);
 int Height(SetNode* s);
+VertexNode* Find(int vertex, SetNode* &s);
+void Union(VertexNode* &vTo, VertexNode* &vFrom, SetNode* &s);
 
 int main() {
 	KruskalsMinimumSpanningTree(q, t, s);
@@ -72,16 +77,29 @@ void Initialization(Edge q[], int &edgeCount, SetNode* &s, int &vertexCount) {
 		Insert(x, y, z, q, edgeCount);
 		result = Insert(x, s, vertexCount);
 		if (result == true) {
-			SetNode* v = Find(x, s);
+			VertexNode* v = Find(x, s);
 			MakeSet(v);
 		}
 	}
 	return;
 }
 void Search(Edge q[], int edgeCount, SetNode* &s, int vertexCount, Edge t[]) {
-	while (/*length of t < vertexCount - 1*/) {
+	while (ARRAY_SIZE(t) < vertexCount - 1) {
 		//e is the shortest edge in the priority queue
+		Edge e = DeleteMin(q, edgeCount);
+		VertexNode* v1 = Find(e.vertex1, s);
+		VertexNode* v2 = Find(e.vertext2, s);
+		if (v1->subset != v2->subset) {
+			//e is added to the edges in the minimum spanning tree
+			InsertUnsorted(e, t);
+			//merge the two subsets in the AVL tree
+			//move the smaller subset to the larger subset
+			if (v1->subset->size >= v2->subset->size)
+				Union(v1, v2, s);
+			else
+				Union(v2, v1, s);
 
+		}
 	}
 }
 void Tree(Edge t[]) {
@@ -154,12 +172,12 @@ bool Insert(int w, SetNode* &s, int &vertexCount) {
 	}
 	return result;
 }
-void MakeSet(SetNode* &s) {
-	s->subset = new SubsetNode;
-	s->subset->size = 1;
-	s->subset->firstVertex = new VertexNode;
-	s->subset->firstVertex->vertex = s->vertex;
-	s->subset->firstVertex->next = NULL;
+void MakeSet(VertexNode* v) {
+	v->subset = new SubsetNode;
+	v->subset->size = 1;
+	v->subset->firstVertex = new VertexNode;
+	v->subset->firstVertex->vertex = s->vertex;
+	v->subset->firstVertex->next = NULL;
 }
 Edge DeleteMin(Edge q[], int &edgeCount) {
 	Edge e = q[1];
@@ -181,4 +199,42 @@ Edge DeleteMin(Edge q[], int &edgeCount) {
 	}
 	q[i] = temp;
 	return e;
+}
+void Union(VertexNode* &vTo, VertexNode* &vFrom, SetNode* &s) {
+	vTo->subset->size = vTo->subset->size + vFrom->subset->size;
+	VertexNode* v = vTo->subset->firstVertex;
+	while (v->next != NULL) {
+		v = v->next;
+	}
+	v->next = vFrom->subset->firstVertex;
+	delete vFrom->subset;
+	v = v->next;
+	while (v != NULL) {
+		vFrom = Find(v->vertex, s);
+		vFrom->subset = vTo->subset;
+		v = v->next;
+	}
+	return;
+}
+void InsertUnsorted(Edge e, Edge t[]) {
+	t[t_array_pos] = e;
+	t_array_pos++;
+	return;
+}
+VertexNode* Find(int vertex, SetNode* &s){
+
+}
+
+//AVL Tree Balancing
+void LL(SetNode* s) {
+
+}
+void LR(SetNode* s) {
+
+}
+void RR(SetNode* s) {
+
+}
+void RL(SetNode* s) {
+
 }
