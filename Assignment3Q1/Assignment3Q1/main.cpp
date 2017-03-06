@@ -22,6 +22,7 @@ Edge t[14];
 int t_array_pos = 0;
 
 //Kruskal Data Structures
+struct SubsetNode;
 struct VertexNode {
 	int vertex;
 	VertexNode* next;
@@ -50,8 +51,13 @@ void MakeSet(VertexNode* v);
 Edge DeleteMin(Edge q[], int &edgeCount);
 int Max(int height1, int height2);
 int Height(SetNode* s);
-VertexNode* Find(int vertex, SetNode* &s);
+VertexNode* Find(int vertex, SetNode* s);
 void Union(VertexNode* &vTo, VertexNode* &vFrom, SetNode* &s);
+void InsertUnsorted(Edge e, Edge t[]);
+void LL(SetNode* &s);
+void LR(SetNode* &s);
+void RR(SetNode* &s);
+void RL(SetNode* &s);
 
 int main() {
 	KruskalsMinimumSpanningTree(q, t, s);
@@ -221,20 +227,52 @@ void InsertUnsorted(Edge e, Edge t[]) {
 	t_array_pos++;
 	return;
 }
-VertexNode* Find(int vertex, SetNode* &s){
-
+VertexNode* Find(int vertex, SetNode* s){
+	if (s->subset->firstVertex == NULL || vertex == s->vertex)
+		return s->subset->firstVertex;
+	else if (vertex < s->vertex)
+		return Find(vertex, s->left);
+	else
+		return Find(vertex, s->right);
 }
 
 //AVL Tree Balancing
-void LL(SetNode* s) {
-
+void LL(SetNode* &s) {
+	SetNode* q = s->left;
+	s->left = q->right;
+	q->right = s;
+	s->height = Max((Height(s->left)), (Height(s->right) + 1));
+	q->height = Max((Height(q->left)), (Height(q->right) + 1));
+	s = q;
+	return;
 }
-void LR(SetNode* s) {
-
+void LR(SetNode* &s) {
+	RR(s->left);
+	LL(s);
+	return;
 }
-void RR(SetNode* s) {
-
+void RR(SetNode* &s) {
+	SetNode* q = s->right;
+	s->right = q->left;
+	q->left = s;
+	s->height = Max((Height(s->left)), (Height(s->right) + 1));
+	q->height = Max((Height(q->left)), (Height(q->right) + 1));
+	s = q;
+	return;
 }
-void RL(SetNode* s) {
-
+void RL(SetNode* &s) {
+	LL(s->right);
+	RR(s);
+}
+int Height(SetNode* s) {
+	if (s == NULL)
+		return -1;
+	else
+		return s->height;
+}
+int Max(int height1, int height2) {
+	if (height1 >= height2)
+		return height1;
+	else
+		return height2;
 }
