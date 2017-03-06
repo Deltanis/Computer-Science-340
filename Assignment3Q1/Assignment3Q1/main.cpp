@@ -86,6 +86,11 @@ void Initialization(Edge q[], int &edgeCount, SetNode* &s, int &vertexCount) {
 			VertexNode* v = Find(x, s);
 			MakeSet(v);
 		}
+		result = Insert(y, s, vertexCount);
+		if (result == true) {
+			VertexNode* v = Find(y, s);
+			MakeSet(v);
+		}
 	}
 	return;
 }
@@ -109,7 +114,15 @@ void Search(Edge q[], int edgeCount, SetNode* &s, int vertexCount, Edge t[]) {
 	}
 }
 void Tree(Edge t[]) {
-
+	for (int i = 1; i < ARRAY_SIZE(t); i++) {
+		cout << t[i].vertex1;
+		cout << "--";
+		cout << t[i].vertext2;
+		cout << " (Length = ";
+		cout << t[i].distance;
+		cout << ")";
+		cout << endl;
+	}
 }
 //Binary Heap Insert
 void Insert(int x, int y, int z, Edge q[], int &edgeCount) {
