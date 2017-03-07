@@ -2,7 +2,6 @@
 Assignment 3, Question 1 "Kruskal's Algorithm"
 Austin McPhail
 200341412
-
 */
 
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
