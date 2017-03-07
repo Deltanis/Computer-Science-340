@@ -17,8 +17,14 @@ struct Edge {
 	int vertext2;
 	int distance;
 };
+//EDGE ARRAYS FOR GRAPH FROM CLASS
+Edge q[12];
+Edge t[12];
+
+/*//EDGE ARRAYS FOR GRAPH.TXT
 Edge q[23];
 Edge t[23];
+*/
 int t_array_pos = 0;
 
 //Kruskal Data Structures
@@ -82,9 +88,36 @@ void KruskalsMinimumSpanningTree(Edge q[], Edge t[], SetNode* &s) {
 }
 void Initialization(Edge q[], int &edgeCount, SetNode* &s, int &vertexCount) {
 	bool result;
+
+	//DATA FROM IN CLASS GRAPH
+	int X[12] = {3, 3, 3, 1, 1, 6, 6, 4, 4, 4, 2,  7};
+	int Y[12] = {1, 4, 6, 2, 4, 4, 7, 2, 5, 7, 5,  5};
+	int Z[12] = {4, 2, 5, 2, 1, 8, 1, 3, 7, 4, 10, 6};
+
+	for (int i = 1; i < 12; i++) {
+		int x = X[i];
+		int y = Y[i];
+		int z = Z[i];
+		Insert(x, y, z, q, edgeCount);
+		result = Insert(x, s, vertexCount);
+		if (result == true) {
+			SetNode* v = Find(x, s);
+			MakeSet(v);
+		}
+		result = Insert(y, s, vertexCount);
+		if (result == true) {
+			SetNode* v = Find(y, s);
+			MakeSet(v);
+		}
+	}
+	return;
+	
+
+	/* //DATA FROM GRAPH.TXT
 	int X[23] = { 0, 1,  1,  2,   2,  3,  6,  6,  5,  5,  8,  8,   6,  10,  14, 8,  11, 7,   11, 13, 13,  13, 9 };
 	int Y[23] = { 0, 2,  3,  4,   5,  10, 3,  4,  7,  8,  4,  6,   10, 14,  12, 10, 8,  11,  12, 12, 7,   9,  7 };
 	int Z[23] = { 0, 70, 61, 31, 110, 59, 88, 70, 30, 67, 65, 100, 65, 140, 85, 26, 12, 126, 19, 39, 105, 30, 74 };
+
 	for (int i = 1; i < 23; i++) {
 		int x = X[i];
 		int y = Y[i];
@@ -102,6 +135,7 @@ void Initialization(Edge q[], int &edgeCount, SetNode* &s, int &vertexCount) {
 		}
 	}
 	return;
+	*/
 }
 void Search(Edge q[], int &edgeCount, SetNode* &s, int vertexCount, Edge t[]) {
 	while (t_array_pos < vertexCount - 1) {
